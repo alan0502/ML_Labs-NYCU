@@ -1,5 +1,5 @@
 # Machine Learning Labs
-The Labs of Machine Learning in Department of Computer Science in National Yang Ming Chiao Tung University. (NYCU)
+The Labs in Machine Learning course in Department of Computer Science in National Yang Ming Chiao Tung University (NYCU).
 ## Lab1
 Topics: 
 1. Linear Regression
