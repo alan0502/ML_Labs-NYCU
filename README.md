@@ -1,6 +1,7 @@
-# The Labs of Machine Learning in NYCU
+# Machine Learning Labs
+The Labs of Machine Learning in Department of Computer Science in National Yang Ming Chiao Tung University. (NYCU)
 ## Lab1
-Topic: 
+Topics: 
 1. Linear Regression
 2. LSE
 3. Steepest Gradient Descent
