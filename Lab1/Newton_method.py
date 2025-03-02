@@ -6,11 +6,8 @@ def inverse_LU(A, degree):
     A_inv = np.zeros((degree, degree))
     L, U = lu.LU_decomposition(A)
     for i in range(degree):
-        # **求解 LY = I[:, i]**
         Y = lu.forward_substitution(L, I[:, i])
-        # **求解 UX = Y**
         X = lu.backward_substitution(U, Y)
-        # **將解填入 A_inv**
         A_inv[:, i] = X
     return A_inv
 
