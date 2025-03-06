@@ -10,7 +10,7 @@ def descent(A, b, degree, lam, lr):
         gradient = 2*(AT_A @ X) - 2*At_b + lam*np.sign(X)
         eta = lr * np.exp(-gamma * (100-n))
         Xnew = X - eta * gradient
-        print(np.linalg.norm(Xnew - X, ord=2))
+        #print(np.linalg.norm(Xnew - X, ord=2))
         X = Xnew
         n = n-1
     return X

@@ -12,7 +12,8 @@ def inverse_LU(A, degree):
     return A_inv
 
 def optimize(A, b, degree):
-    X = np.zeros(degree)
+    X = np.random.rand(degree)
+    print(X)
     At_A = A.T @ A
     At_b = A.T @ b
     At_A_inv = inverse_LU(At_A, degree)
