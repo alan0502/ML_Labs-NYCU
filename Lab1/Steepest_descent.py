@@ -1,7 +1,7 @@
 import numpy as np
 
 def descent(A, b, degree, lam, lr):
-    X = np.zeros(degree)
+    X = np.random.rand(degree)
     At_b = A.T @ b
     AT_A = A.T @ A
     n = 100
