@@ -9,7 +9,7 @@ def cal_posterior(train_images, train_labels, test_data, prior):
         var[i] = np.var(train_images[train_labels == i], axis=0) + 1e-6  # 計算變異數
     #print(mean[0])
     #print(var[0])
-    #print(test_data)
+    #print(test_data) (10000, 28, 28)
     num_samples = test_data.shape[0]
     posterior_table = np.zeros((num_samples, 10), dtype=np.float32)
     for y in range(10):
@@ -26,4 +26,4 @@ def cal_posterior(train_images, train_labels, test_data, prior):
 
         # Marginalization: 確保機率總和為 1
         posterior_table[i] /= np.sum(posterior_table[i])
-    return posterior_table, np.argmax(posterior_table, axis=1)
+    return posterior_table, np.argmax(posterior_table, axis=1), mean

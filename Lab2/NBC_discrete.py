@@ -52,4 +52,3 @@ def cal_posterior(train_data, train_target, test_data, num_bins, prior):
         posterior_table[i] /= np.sum(posterior_table[i])
 
     return freq_table, posterior_table, np.argmax(posterior_table, axis=1)
-    

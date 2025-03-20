@@ -87,7 +87,7 @@ if mode == 0:
     #print("Imagination of numbers in Bayesian classifier:")
 elif mode == 1:
     print("Using Continuous Mode")
-    posterior_table, pred_labels = nbc_con.cal_posterior(train_images, train_labels, test_images, prior)
+    posterior_table, pred_labels, mean = nbc_con.cal_posterior(train_images, train_labels, test_images, prior)
     print(posterior_table[0])
     print(pred_labels[0])
     pred_path = 'outputfile/pred_continuous.txt'
@@ -96,15 +96,34 @@ elif mode == 1:
     print(f"Naive Bayes Accuracy: {accuracy:.2f}%")
     with open(pred_path, 'w') as f:
         for i in range(10000):
-            #f.write(f"Posterior (in log scale):\n")
+            f.write(f"Posterior (in log scale):\n")
             print("Posterior (in log scale):")
             for y in range(10):
-                #f.write(f"{y}: {posterior_table[i, y]:.15f}\n")
+                f.write(f"{y}: {posterior_table[i, y]:.15f}\n")
                 print(f"{y}: {posterior_table[i, y]:.15f}")
-            #f.write(f"Prediction: {pred_labels[i]}, Ans: {test_labels[i]}\n")
+            f.write(f"Prediction: {pred_labels[i]}, Ans: {test_labels[i]}\n")
             print(f"Prediction: {pred_labels[i]}, Ans: {test_labels[i]}")
-            #f.write("\n")
+            f.write("\n")
             print()
-        #f.write(f"Naive Bayes Accuracy: {accuracy:.2f}%\n")
+        f.write(f"Naive Bayes Accuracy: {accuracy:.2f}%\n")
         print(f"Naive Bayes Accuracy: {accuracy:.2f}%")
+    print()
+    with open(imagine_path, 'w') as f:
+        f.write("Imagination of numbers in Bayesian classifier:\n")
+        print("Imagination of numbers in Bayesian classifier:")
+        for i in range(10):
+            f.write(f"{i}:\n")
+            print(f"{i}:")
+            for j in range(28):
+                for k in range(28):
+                    if mean[i][j][k] > 128:
+                        f.write("1")
+                        print("1", end="")
+                    else:
+                        f.write("0")
+                        print("0", end="")
+                f.write("\n")
+                print()
+            f.write("\n")
+            print()
     print()
