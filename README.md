@@ -6,7 +6,7 @@ Topics:
 2. LSE
 3. Steepest Gradient Descent
 4. Newton Method
----
+
 ## Lab2
 Topics:
 1. Use Naive Bayes Classifier to process MNIST Dataset
