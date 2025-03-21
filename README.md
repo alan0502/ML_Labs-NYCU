@@ -1,4 +1,4 @@
-# Machine Learning Labs
+# ML_Labs
 The Labs in **Machine Learning** course lectured in Department of Computer Science in National Yang Ming Chiao Tung University **(NYCU)**.
 ## Lab1
 Topics: 
