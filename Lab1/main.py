@@ -21,18 +21,6 @@ def read_data(file_path):
 def design_matrix(X, degree):
     return np.vander(X, degree, increasing=True)
 
-def plotting(X, y, w, method, degree):
-    plt.scatter(X, y, label= "data point", color= 'red')
-    x_range = np.linspace(min(X), max(X), 200)
-    A = design_matrix(x_range, degree)
-    Ax = A @ w
-    plt.plot(x_range, Ax, label=f"{method} Fit", color="red")
-    plt.xlabel("X")
-    plt.ylabel("Y")
-    plt.legend()
-    plt.title(f"{method} Polynomial Regression (degree={degree})")
-    plt.show()
-
 def cal_fittingline(w):
     equation = []
     for i in range(0, len(w)):
@@ -55,6 +43,8 @@ N = int(input("N: "))
 lam = int(input("lambda: "))
 file_path = "inputfile.txt"
 X, y = read_data(file_path)
+print(X)
+print(y)
 A = design_matrix(X, N)
 
 # LSE
