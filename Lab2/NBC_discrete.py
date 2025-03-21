@@ -1,4 +1,5 @@
 import numpy as np
+
 def cal_likelihood(data, target, num_bins):
     bin_size = 256 // num_bins 
     #print(bin_size)

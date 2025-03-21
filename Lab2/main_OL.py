@@ -1,5 +1,6 @@
 import numpy as np
 import math
+
 def read_data(file_path):
     data = []
     with open(file_path, "r") as file:
