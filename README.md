@@ -9,6 +9,6 @@ Topics:
 
 ## Lab2
 Topics:
-1. Use Naive Bayes Classifier to process MNIST Dataset
+1. Using Naive Bayes Classifier to process MNIST Dataset
 2. Sequential Learning (Online Learning)
 3. Beta-Binomial Conjugation 
