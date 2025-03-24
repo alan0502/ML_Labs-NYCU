@@ -4,11 +4,13 @@ def cal_posterior(train_images, train_labels, test_data, prior):
     print("cal_posterior")
     mean = np.zeros((10, 28, 28), dtype=np.float32)
     var = np.zeros((10, 28, 28), dtype=np.float32)
+    #print(train_images)
     for i in range(10):  
         mean[i] = np.mean(train_images[train_labels == i], axis=0)  
         var[i] = np.var(train_images[train_labels == i], axis=0) + 1e-6 
     #print(mean[0])
-    #print(var[0])
+    print(var[0])
+    var = var**(1/1000)
     #print(test_data) (10000, 28, 28)
     num_samples = test_data.shape[0]
     posterior_table = np.zeros((num_samples, 10), dtype=np.float32)

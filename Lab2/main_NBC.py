@@ -32,7 +32,8 @@ unique_labels = np.unique(train_labels)
 #print(train_labels.shape[0])
 #print(train_images[0])
 
-count = np.bincount(train_labels)  
+count = np.bincount(train_labels) 
+print(count) 
 prior = count / len(train_labels)  
 
 num_bins = 32
@@ -112,10 +113,10 @@ elif mode == 1:
                 for k in range(28):
                     if mean[i][j][k] > 128:
                         f.write("1")
-                        print("1", end="")
+                        print("0", end="")
                     else:
                         f.write("0")
-                        print("0", end="")
+                        print("1", end="")
                 f.write("\n")
                 print()
             f.write("\n")
