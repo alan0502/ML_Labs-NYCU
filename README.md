@@ -1,5 +1,5 @@
 # ML_Labs
-The Labs in **Machine Learning** course lectured in Department of Computer Science in National Yang Ming Chiao Tung University **(NYCU)**.
+The Labs in **Machine Learning** course lectured in Department of Computer Science in National Yang Ming Chiao Tung University **(NYCU)** in 2025 spring semester.
 ## Lab1
 Topics: 
 1. Linear Regression
