@@ -19,21 +19,21 @@ def load_mnist_labels(filename):
 def compute_accuracy(predictions, true_labels):
     return np.mean(predictions == true_labels) * 100
 
-# 測試讀取 MNIST 數據
+# Read MNIST data
 train_images = load_mnist_images("train-images.idx3-ubyte__")
 train_labels = load_mnist_labels("train-labels.idx1-ubyte__")
 test_images = load_mnist_images("t10k-images.idx3-ubyte__")
 test_labels = load_mnist_labels("t10k-labels.idx1-ubyte__")
 unique_labels = np.unique(train_labels)
-#print(f"Train images shape: {train_images.shape}")  # (60000, 28, 28)
-#print(f"Train labels shape: {train_labels.shape}")  # (60000,)
-#print(f"Test images shape: {test_images.shape}")  # (10000, 28, 28)
-#print(f"Test labels shape: {test_labels.shape}")  # (10000,)
-#print(train_labels.shape[0])
-#print(train_images[0])
+# print(f"Train images shape: {train_images.shape}")  # (60000, 28, 28)
+# print(f"Train labels shape: {train_labels.shape}")  # (60000,)
+# print(f"Test images shape: {test_images.shape}")  # (10000, 28, 28)
+# print(f"Test labels shape: {test_labels.shape}")  # (10000,)
+# print(train_labels.shape[0])
+# print(train_images[0])
 
 count = np.bincount(train_labels) 
-print(count) 
+# print(count) 
 prior = count / len(train_labels)  
 
 num_bins = 32
@@ -47,36 +47,36 @@ if mode == 0:
     accuracy = compute_accuracy(pred_labels, test_labels)
     with open(pred_path, 'w') as f:
         for i in range(10000):
-            f.write(f"Posterior (in log scale):\n")
+            #f.write(f"Posterior (in log scale):\n")
             print("Posterior (in log scale):")
             for y in range(10):
-                f.write(f"{y}: {posterior_table[i, y]:.15f}\n")
+                #f.write(f"{y}: {posterior_table[i, y]:.15f}\n")
                 print(f"{y}: {posterior_table[i, y]:.15f}")
-            f.write(f"Prediction: {pred_labels[i]}, Ans: {test_labels[i]}\n")
+            #f.write(f"Prediction: {pred_labels[i]}, Ans: {test_labels[i]}\n")
             print(f"Prediction: {pred_labels[i]}, Ans: {test_labels[i]}")
-            f.write("\n")
+            #f.write("\n")
             print()
-        f.write(f"Naive Bayes Accuracy: {accuracy:.2f}%\n")
+        #f.write(f"Naive Bayes Accuracy: {accuracy:.2f}%\n")
         print(f"Naive Bayes Accuracy: {accuracy:.2f}%")
     print()
     with open(imagine_path, 'w') as f:
-        f.write("Imagination of numbers in Bayesian classifier:\n")
+        #f.write("Imagination of numbers in Bayesian classifier:\n")
         print("Imagination of numbers in Bayesian classifier:")
         for i in range(10):
-            f.write(f"{i}:\n")
+            #f.write(f"{i}:\n")
             print(f"{i}:")
             for j in range(28):
                 for k in range(28):
                     max_bin = np.argmax(freq_table[i][j][k])
                     if(max_bin < 16):
-                        f.write("0")
+                        #f.write("0")
                         print("0", end="")
                     else:
-                        f.write("1")
+                        #f.write("1")
                         print("1", end="")
-                f.write("\n")
+                #f.write("\n")
                 print()
-            f.write("\n")
+            #f.write("\n")
             print()
     #print_posterior(nbc, test_labels, num_samples=5)
     #print(nbc[0][20][20])
@@ -91,34 +91,34 @@ elif mode == 1:
     print(f"Naive Bayes Accuracy: {accuracy:.2f}%")
     with open(pred_path, 'w') as f:
         for i in range(10000):
-            f.write(f"Posterior (in log scale):\n")
+            #f.write(f"Posterior (in log scale):\n")
             print("Posterior (in log scale):")
             for y in range(10):
-                f.write(f"{y}: {posterior_table[i, y]:.15f}\n")
+                #f.write(f"{y}: {posterior_table[i, y]:.15f}\n")
                 print(f"{y}: {posterior_table[i, y]:.15f}")
-            f.write(f"Prediction: {pred_labels[i]}, Ans: {test_labels[i]}\n")
+            #f.write(f"Prediction: {pred_labels[i]}, Ans: {test_labels[i]}\n")
             print(f"Prediction: {pred_labels[i]}, Ans: {test_labels[i]}")
-            f.write("\n")
+            #f.write("\n")
             print()
-        f.write(f"Naive Bayes Accuracy: {accuracy:.2f}%\n")
+        #f.write(f"Naive Bayes Accuracy: {accuracy:.2f}%\n")
         print(f"Naive Bayes Accuracy: {accuracy:.2f}%")
     print()
     with open(imagine_path, 'w') as f:
-        f.write("Imagination of numbers in Bayesian classifier:\n")
+        #f.write("Imagination of numbers in Bayesian classifier:\n")
         print("Imagination of numbers in Bayesian classifier:")
         for i in range(10):
-            f.write(f"{i}:\n")
+            #f.write(f"{i}:\n")
             print(f"{i}:")
             for j in range(28):
                 for k in range(28):
                     if mean[i][j][k] > 128:
-                        f.write("1")
+                        #f.write("1")
                         print("0", end="")
                     else:
-                        f.write("0")
+                        #f.write("0")
                         print("1", end="")
-                f.write("\n")
+                #f.write("\n")
                 print()
-            f.write("\n")
+            #f.write("\n")
             print()
     print()
