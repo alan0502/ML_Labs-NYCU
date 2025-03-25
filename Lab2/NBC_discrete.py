@@ -2,19 +2,19 @@ import numpy as np
 
 def cal_likelihood(data, target, num_bins):
     bin_size = 256 // num_bins 
-    # print(bin_size)
+    #print(bin_size)
     image = data // bin_size
-    # print(image[0])
+    #print(image[0])
     freq_table = np.zeros((10, 28, 28, num_bins), dtype=np.float32)  
     print(data.shape)
-    # print(image.shape)
-    # print(target)
+    #print(image.shape)
+    #print(target)
     # freq_table 紀錄每個類別中每個像素中每個bin出現的次數
     for i in range(data.shape[0]):
         for j in range(data.shape[1]):
             for k in range(data.shape[2]):
                 freq_table[target[i]][j][k][image[i][j][k]] += 1
-    # print(freq_table[0][20][20])
+    #print(freq_table[0][20][20])
     # bin_index = pixel_value // 8  
     #maximumlikelihood = data.groupby(target).size() / len(data)
     # Laplace smoothing
@@ -31,7 +31,7 @@ def cal_likelihood(data, target, num_bins):
 
 def cal_posterior(train_data, train_target, test_data, num_bins, prior):
     freq_table = cal_likelihood(train_data, train_target, num_bins)
-    # print(freq_table[0][20][20])
+    #print(freq_table[0][20][20])
     num_samples = test_data.shape[0]
     posterior_table = np.zeros((num_samples, 10), dtype=np.float32)
     bin_size = 256 // num_bins 
@@ -47,8 +47,7 @@ def cal_posterior(train_data, train_target, test_data, num_bins, prior):
                     bin_idx = test_image[i, j, k]
                     log_sum += np.log(freq_table[y, j, k, bin_idx] + 1e-6)  # avoid log(0)
             posterior_table[i, y] = log_sum
-    # print(posterior_table[0])
-    # for i in range(num_samples):
+    #print(posterior_table[0])
     # posterior_table[i] = np.exp(posterior_table[i] - np.max(posterior_table[i]))
     for i in range(num_samples):
         # 減去最大值，避免 overflow
