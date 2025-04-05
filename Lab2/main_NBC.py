@@ -20,10 +20,10 @@ def compute_accuracy(predictions, true_labels):
     return np.mean(predictions == true_labels) * 100
 
 # Read MNIST data
-train_images = load_mnist_images("train-images.idx3-ubyte__")
-train_labels = load_mnist_labels("train-labels.idx1-ubyte__")
-test_images = load_mnist_images("t10k-images.idx3-ubyte__")
-test_labels = load_mnist_labels("t10k-labels.idx1-ubyte__")
+train_images = load_mnist_images("inputimage/train-images.idx3-ubyte__")
+train_labels = load_mnist_labels("inputimage/train-labels.idx1-ubyte__")
+test_images = load_mnist_images("inputimage/t10k-images.idx3-ubyte__")
+test_labels = load_mnist_labels("inputimage/t10k-labels.idx1-ubyte__")
 unique_labels = np.unique(train_labels)
 #print(f"Train images shape: {train_images.shape}")  # (60000, 28, 28)
 #print(f"Train labels shape: {train_labels.shape}")  # (60000,)
