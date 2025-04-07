@@ -78,73 +78,82 @@ def draw_plot(mean, variance, seen_x, seen_y, title, save_path=None):
         plt.savefig(save_path, dpi=300)
     plt.show()
 
-def draw_combined_plots(W, a, n, mean_10, var_10, x_10, y_10, mean_50, var_50, x_50, y_50):
+def draw_combined_plots(W, a, n, mean, variance, mean_10, var_10, mean_50, var_50, seen10_x, seen10_y, seen50_x, seen50_y, seen_x, seen_y):
     x_plot = np.linspace(-2, 2, 200)
-    phi_plot = np.vstack([design_matrix(x, n).T for x in x_plot])
-
-    def predict(mean, var):
-        y_mean = phi_plot @ mean
-        y_std = [math.sqrt(phi @ var @ phi.T + 1 / a) for phi in phi_plot]
+    y_true = []
+    y_upper = []
+    y_lower = []
+    for x in x_plot:
+        phi = design_matrix(x, n)
+        y = float(np.dot(W, phi.flatten()))  # y = w^T phi(x)
+        y_true.append(y)
+        var = a
+        y_upper.append(y + var)
+        y_lower.append(y - var)
+    def predict(mean, variance):
+        y_mean = []
+        y_std = []
+        for x_star in x_plot:
+            phi_star = design_matrix(x_star, len(mean))
+            mu = (phi_star.T @ mean).item()
+            var = (phi_star.T @ variance @ phi_star + a).item()
+            y_mean.append(mu)
+            y_std.append(var)
         return y_mean, y_std
-
-    y_true = [float(np.dot(W, design_matrix(x, n).flatten())) for x in x_plot]
-    y_upper_gt = [y + math.sqrt(1 / a) for y in y_true]
-    y_lower_gt = [y - math.sqrt(1 / a) for y in y_true]
 
     y_mean_10, y_std_10 = predict(mean_10, var_10)
     y_mean_50, y_std_50 = predict(mean_50, var_50)
+    y_mean, y_std = predict(mean, variance)
 
     fig, axs = plt.subplots(2, 2, figsize=(10, 8))
 
     # Top-left: Ground truth
     axs[0, 0].plot(x_plot, y_true, 'k-')
-    axs[0, 0].plot(x_plot, y_upper_gt, 'r-')
-    axs[0, 0].plot(x_plot, y_lower_gt, 'r-')
+    axs[0, 0].plot(x_plot, y_upper, 'r-')
+    axs[0, 0].plot(x_plot, y_lower, 'r-')
     axs[0, 0].set_title("Ground truth")
     axs[0, 0].set_xlim(-2, 2)
     axs[0, 0].set_ylim(-12, 25)
 
-    # Top-right: After 50
-    axs[0, 1].plot(x_plot, y_mean_50, 'k-')
-    axs[0, 1].plot(x_plot, y_mean_50 + y_std_50, 'r-')
-    axs[0, 1].plot(x_plot, y_mean_50 - y_std_50, 'r-')
-    axs[0, 1].scatter(x_50, y_50, color='blue', s=5)
-    axs[0, 1].set_title("After 50 incomes")
+    # Top-right: Predict result
+    axs[0, 1].plot(x_plot, y_mean, 'k-')
+    axs[0, 1].plot(x_plot, np.array(y_mean) + np.array(y_std), 'r-')
+    axs[0, 1].plot(x_plot, np.array(y_mean) - np.array(y_std), 'r-')
+    axs[0, 1].scatter(seen_x, seen_y, color='blue', s=5)
+    axs[0, 1].set_title("Predict result")
     axs[0, 1].set_xlim(-2, 2)
     axs[0, 1].set_ylim(-12, 25)
 
-    # Bottom-left: After 10
-    axs[1, 0].plot(x_plot, y_mean_10, 'k-')
-    axs[1, 0].plot(x_plot, y_mean_10 + y_std_10, 'r-')
-    axs[1, 0].plot(x_plot, y_mean_10 - y_std_10, 'r-')
-    axs[1, 0].scatter(x_10, y_10, color='blue', s=5)
+    # Bottom-left: After 10 incomes
+    axs[1, 0].plot(x_plot, y_mean_10, 'k-', linewidth=2)
+    axs[1, 0].plot(x_plot, np.array(y_mean_10) + np.array(y_std_10), 'r-')
+    axs[1, 0].plot(x_plot, np.array(y_mean_10) - np.array(y_std_10), 'r-')
+    axs[1, 0].scatter(seen10_x, seen10_y, color='blue', s=5)
     axs[1, 0].set_title("After 10 incomes")
     axs[1, 0].set_xlim(-2, 2)
     axs[1, 0].set_ylim(-12, 25)
 
-    # Bottom-right: After 50 + GT
-    axs[1, 1].plot(x_plot, y_true, 'k-')
-    axs[1, 1].plot(x_plot, y_mean_50 + y_std_50, 'r-')
-    axs[1, 1].plot(x_plot, y_mean_50 - y_std_50, 'r-')
-    axs[1, 1].scatter(x_50, y_50, color='blue', s=5)
-    axs[1, 1].set_title("Predict result")
+    # Bottom-right: After 50 incomes
+    axs[1, 1].plot(x_plot, y_mean_50, 'k-')
+    np.array(y_mean) + np.array(y_std)
+    axs[1, 1].plot(x_plot, np.array(y_mean_50) + np.array(y_std_50), 'r-')
+    axs[1, 1].plot(x_plot, np.array(y_mean_50) - np.array(y_std_50), 'r-')
+    axs[1, 1].scatter(seen50_x, seen50_y, color='blue', s=5)
+    axs[1, 1].set_title("After 50 incomes")
     axs[1, 1].set_xlim(-2, 2)
     axs[1, 1].set_ylim(-12, 25)
 
     plt.tight_layout()
-    plt.savefig("predict_combined.png")
+    #plt.savefig("result_plot/case3.png")
     plt.show()
 
-
-
-
-b = float(input("b: "))
+b = float(input("Precision of Prior (b): "))
 n = int(input("Basis Number: "))
-a = float(input("Precision of Likelihood: "))
-w = input("請輸入一串數字，用空格分隔：")
+a = float(input("Precision of Likelihood (a): "))
+w = input("W：")
 W = [float(x) for x in w.split()]
 #print(f"Design matrix: {phy}")
-draw_ground_truth(W, a, n, title="Ground truth", save_path="gt.png")
+#draw_ground_truth(W, a, n, title="Ground truth", save_path="gt.png")
 
 # Initialize prior mean and variance
 mean = np.zeros(n)
@@ -161,38 +170,45 @@ while True:
     x, y = dg.linear_model_generator(n, W, a)
     seen_x.append(x)
     seen_y.append(y)
-    print(f"Add data point ({x}, {y})")
-
+    print(f"Add data point ({x}, {y}): ")
+    print()
     phi = design_matrix(x, n)
-    print(f"Design matrix: {phi}")
+    #print(f"Design matrix: {phi}")
 
     # Update posterior covariance
     variance_inv = np.linalg.inv(variance)
-    variance = np.linalg.inv(variance_inv + a * phi @ phi.T)
+    variance = np.linalg.inv(variance_inv + (1/a) * phi @ phi.T)
 
     # Update posterior mean
-    mean = variance @ (variance_inv @ mean + a * phi.flatten() * y)
+    mean = variance @ (variance_inv @ mean + (1/a) * phi.flatten() * y)
 
     print(f"Posterior mean:")
     print(mean)
+    print()
     print(f"Posterior variance:")
     print(variance)
-    phi_star = phi  # 就是剛剛的 phi
+    print()
+    phi_star = phi
     predictive_mean = float(phi_star.T @ mean)
-    predictive_var = float(phi_star.T @ variance @ phi_star + 1 / a)
+    predictive_var = float(phi_star.T @ variance @ phi_star + a)
     print(f"Predictive distribution ~ N({predictive_mean:.5f}, {predictive_var:.5f})")
+    print()
     count += 1
     if count == 10:
         seen10_x = seen_x.copy()
         seen10_y = seen_y.copy()
-        draw_plot(mean, variance, seen_x, seen_y, "After 10 incomes", None)
+        mean_10 = mean.copy()
+        var_10 = variance.copy()
+        #draw_plot(mean, variance, seen_x, seen_y, "After 10 incomes", None)
     elif count == 50:
         seen50_x = seen_x.copy()
         seen50_y = seen_y.copy()
-        draw_plot(mean, variance, seen_x, seen_y, "After 50 incomes", None)
+        mean_50 = mean.copy()
+        var_50 = variance.copy()
+        #draw_plot(mean, variance, seen_x, seen_y, "After 50 incomes", None)
     if np.all(np.abs(mean - mean_prev) < epsilon) and np.all(np.abs(variance - var_prev) < epsilon):
         print("Posterior has converged.")
-        draw_plot(mean, variance, seen_x, seen_y, "predict result", "predict_result.png")
-        #draw_plot(mean, variance, seen10_x, seen10_y, seen50_x, seen50_y, seen_x, seen_y, "predict result", "predict_result.png")
+        #draw_plot(mean, variance, seen_x, seen_y, "predict result", "predict_result.png")
+        draw_combined_plots(W, a, n, mean, variance, mean_10, var_10, mean_50, var_50, seen10_x, seen10_y, seen50_x, seen50_y, seen_x, seen_y)
         break
     
