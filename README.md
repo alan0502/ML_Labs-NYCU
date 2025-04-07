@@ -9,11 +9,11 @@ Topics:
 
 ## Lab2
 Topics:
-1. Using Naive Bayes Classifier to classify and imageine hand-written numbers (0-9) in MNIST dataset
+1. Using Naive Bayes Classifier to classify and imagine hand-written numbers (0-9) in MNIST dataset
 
-ex: 0
+     ex: Imagine 0
 
-  ![image](https://github.com/user-attachments/assets/e48d4799-3a3a-49f5-b3fd-b8e176db4272)
+      ![image](https://github.com/user-attachments/assets/e48d4799-3a3a-49f5-b3fd-b8e176db4272)
 
 2. Sequential Learning (Online Learning)
 3. Beta-Binomial Conjugation
