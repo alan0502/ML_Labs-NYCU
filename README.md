@@ -9,6 +9,27 @@ Topics:
 
 ## Lab2
 Topics:
-1. Using Naive Bayes Classifier to process MNIST Dataset
+1. Using Naive Bayes Classifier to classify different hand-written numbers (0-9) in MNIST dataset
 2. Sequential Learning (Online Learning)
-3. Beta-Binomial Conjugation 
+3. Beta-Binomial Conjugation
+
+## Lab3
+Topics:
+1. Random data generator:
+
+   a. Univariate Gaussian data generator: Generate a random data point from univariate Gaussian distribution for given mean and variance.
+   
+   b. Polynomial basis linear model data generator: Generate a random data point from a polynomial basis for given dimension and weight.
+   
+2. Sequential estimator
+3. Bayesian Linear Regression
+   
+   a. Update the mean and variance of the posterior
+   
+   b. Using the concopt of predictive distribution
+   
+   c. Visualization:
+   
+   ![image](https://github.com/user-attachments/assets/23463244-614e-404e-81f5-5aeef85a2949)
+
+   
