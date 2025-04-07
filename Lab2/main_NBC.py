@@ -83,8 +83,8 @@ if mode == 0:
 elif mode == 1:
     print("Using Continuous Mode")
     posterior_table, pred_labels, mean = nbc_con.cal_posterior(train_images, train_labels, test_images, prior)
-    print(posterior_table[0])
-    print(pred_labels[0])
+    #print(posterior_table[0])
+    #print(pred_labels[0])
     pred_path = 'outputfile/pred_continuous.txt'
     imagine_path = 'outputfile/imagine_continuous.txt'
     accuracy = compute_accuracy(pred_labels, test_labels)
