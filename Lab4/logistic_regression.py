@@ -6,8 +6,8 @@ import pandas as pd
 n = int(input("Enter the number of data points: "))
 mx1, vx1 = 1, 2#map(int, input("mx1, vx1: ").split())
 my1, vy1 = 1, 2#map(int, input("my1, vy1: ").split())
-mx2, vx2 = 3, 4#map(int, input("mx2, vx2: ").split())
-my2, vy2 = 3, 4#map(int, input("my2, vy2: ").split())
+mx2, vx2 = 10, 2#map(int, input("mx2, vx2: ").split())
+my2, vy2 = 10, 2#map(int, input("my2, vy2: ").split())
 
 def multivariate_gaussian_generator(mux, varx, muy, vary):
     sigmax = np.sqrt(varx)
@@ -73,8 +73,7 @@ X = np.vstack([
     np.hstack([np.ones((n, 1)), D1]),
     np.hstack([np.ones((n, 1)), D2])
 ])
-#print(X.shape)  # shape: (2n, 3)
-y = np.array([0]*n + [1]*n).reshape(-1, 1)
+y = np.array([0]*n + [1]*n).reshape(-1, 1) #[0, 1, 0, 1, ...] shape: (2n, 1)
 #print(y[:5])  # Print first 5 labels
 #print(y.shape)  # shape: (2n, 1)
 w = np.random.randn(3, 1) * 0.01

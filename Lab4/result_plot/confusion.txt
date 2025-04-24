@@ -1,0 +1,90 @@
+Confusion Matrix 0:
+                Predict number 0  Predict not number 0
+Is number 0                 3614                   284
+Isn't number 0              2309                 53793
+Sensitivity (Successfully predict number 0): 0.61016
+Specificity (Successfully predict not number 0): 0.99475
+
+----------------------------------------------------------------------
+
+Confusion Matrix 1:
+                Predict number 1  Predict not number 1
+Is number 1                 6123                   915
+Isn't number 1               619                 52343
+Sensitivity (Successfully predict number 1): 0.90819
+Specificity (Successfully predict not number 1): 0.98282
+
+----------------------------------------------------------------------
+
+Confusion Matrix 2:
+                Predict number 2  Predict not number 2
+Is number 2                 4721                   469
+Isn't number 2              1237                 53573
+Sensitivity (Successfully predict number 2): 0.79238
+Specificity (Successfully predict not number 2): 0.99132
+
+----------------------------------------------------------------------
+
+Confusion Matrix 3:
+                Predict number 3  Predict not number 3
+Is number 3                 3975                  2217
+Isn't number 3              2156                 51652
+Sensitivity (Successfully predict number 3): 0.64834
+Specificity (Successfully predict not number 3): 0.95884
+
+----------------------------------------------------------------------
+
+Confusion Matrix 4:
+                Predict number 4  Predict not number 4
+Is number 4                  408                  3566
+Isn't number 4              5434                 50592
+Sensitivity (Successfully predict number 4): 0.06984
+Specificity (Successfully predict not number 4): 0.93416
+
+----------------------------------------------------------------------
+
+Confusion Matrix 5:
+                Predict number 5  Predict not number 5
+Is number 5                 1956                  4778
+Isn't number 5              3465                 49801
+Sensitivity (Successfully predict number 5): 0.36082
+Specificity (Successfully predict not number 5): 0.91246
+
+----------------------------------------------------------------------
+
+Confusion Matrix 6:
+                Predict number 6  Predict not number 6
+Is number 6                 4439                   641
+Isn't number 6              1479                 53441
+Sensitivity (Successfully predict number 6): 0.75008
+Specificity (Successfully predict not number 6): 0.98815
+
+----------------------------------------------------------------------
+
+Confusion Matrix 7:
+                Predict number 7  Predict not number 7
+Is number 7                 3837                  3691
+Isn't number 7              2428                 50044
+Sensitivity (Successfully predict number 7): 0.61245
+Specificity (Successfully predict not number 7): 0.93131
+
+----------------------------------------------------------------------
+
+Confusion Matrix 8:
+                Predict number 8  Predict not number 8
+Is number 8                 3264                  2956
+Isn't number 8              2587                 51193
+Sensitivity (Successfully predict number 8): 0.55785
+Specificity (Successfully predict not number 8): 0.94541
+
+----------------------------------------------------------------------
+
+Confusion Matrix 9:
+                Predict number 9  Predict not number 9
+Is number 9                 2763                  5383
+Isn't number 9              3186                 48668
+Sensitivity (Successfully predict number 9): 0.46445
+Specificity (Successfully predict not number 9): 0.90041
+
+----------------------------------------------------------------------
+Total iteration to converge: 13
