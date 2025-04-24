@@ -73,6 +73,8 @@ X = np.vstack([
     np.hstack([np.ones((n, 1)), D1]),
     np.hstack([np.ones((n, 1)), D2])
 ])
+#print(X[0])
+#print(X.shape)  # shape: (2n, 3)
 y = np.array([0]*n + [1]*n).reshape(-1, 1) #[0, 1, 0, 1, ...] shape: (2n, 1)
 #print(y[:5])  # Print first 5 labels
 #print(y.shape)  # shape: (2n, 1)
@@ -82,9 +84,11 @@ eta = 0.01  # Learning rate
 epoch = 10000  # Number of epochs for gradient descent
 w_grad, p_grad = op.gradient_descent(w, X, y, eta, epoch)
 w_newton, p_newton = op.newtons_method(w, X, y, eta, epoch)
+w_per, p_per = op.perceptron(w, X, y, eta, epoch)
 
 pred_grad = np.where(p_grad >= 0.5, 1, 0)  # shape: (2n, 1)
 pred_newton = np.where(p_newton >= 0.5, 1, 0)  # shape: (2n, 1)
+pred_per = np.where(p_per == 1, 1, 0)  # shape: (2n, 1)
 
 print()
 print("Gradient Descent:")
@@ -92,10 +96,13 @@ grad_tp, grad_tn, grad_fp, grad_fn, grad_sensitivity, grad_specificity = confusi
 print("----------------------------------------------------------------------")
 print("Newton's Method:")
 newton_tp, newton_tn, newton_fp, newton_fn, newton_sensitivity, newton_specificity = confusion_matrix(y, pred_newton, w_newton)
+print("----------------------------------------------------------------------")
+print("Perceptron:")
+per_tp, per_tn, per_fp, per_fn, per_sensitivity, per_specificity = confusion_matrix(y, p_per, w_per)
 
-plt.figure(figsize=(12, 5))  
+plt.figure(figsize=(13, 5))  
 # Ground Truth
-plt.subplot(1, 3, 1)
+plt.subplot(1, 4, 1)
 plt.scatter(D1[:, 0], D1[:, 1], color='red', label='D1 (class 0)', alpha=0.6)
 plt.scatter(D2[:, 0], D2[:, 1], color='blue', label='D2 (class 1)', alpha=0.6)
 plt.title("Ground Truth")
@@ -106,7 +113,7 @@ plt.grid(True)
 plt.axis('equal')
 
 # Predicted Classification using Gradient Descent
-plt.subplot(1, 3, 2)
+plt.subplot(1, 4, 2)
 # 把 X 中的點根據預測類別分開（記得 X 有加 bias，要畫的是 X[:,1], X[:,2]）
 plt.scatter(X[pred_grad.flatten() == 0][:, 1], X[pred_grad.flatten() == 0][:, 2], color='red', label='D1 (class 0)', alpha=0.6)
 plt.scatter(X[pred_grad.flatten() == 1][:, 1], X[pred_grad.flatten() == 1][:, 2], color='blue', label='D2 (class 1)', alpha=0.6)
@@ -118,7 +125,7 @@ plt.grid(True)
 plt.axis('equal')
 
 # Predicted Classification using Newton's Method
-plt.subplot(1, 3, 3)
+plt.subplot(1, 4, 3)
 # 把 X 中的點根據預測類別分開（記得 X 有加 bias，要畫的是 X[:,1], X[:,2]）
 plt.scatter(X[pred_newton.flatten() == 0][:, 1], X[pred_newton.flatten() == 0][:, 2], color='red', label='D1 (class 0)', alpha=0.6)
 plt.scatter(X[pred_newton.flatten() == 1][:, 1], X[pred_newton.flatten() == 1][:, 2], color='blue', label='D2 (class 1)', alpha=0.6)
@@ -128,7 +135,18 @@ plt.ylabel("y")
 plt.legend()
 plt.grid(True)
 plt.axis('equal')
-#plt.savefig("result_plot/case2.png")
+
+# Predicted Classification using Perceptron
+plt.subplot(1, 4, 4)
+plt.scatter(X[pred_per.flatten() == 0][:, 1], X[pred_per.flatten() == 0][:, 2], color='red', label='D1 (class 0)', alpha=0.6)
+plt.scatter(X[pred_per.flatten() == 1][:, 1], X[pred_per.flatten() == 1][:, 2], color='blue', label='D2 (class 1)', alpha=0.6)
+plt.title("Perceptron Prediction")
+plt.xlabel("x")
+plt.ylabel("y")
+plt.legend()
+plt.grid(True)
+plt.axis('equal')
+plt.savefig("result_plot/case1.png")
 plt.tight_layout()
 plt.show()
 

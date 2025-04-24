@@ -42,3 +42,21 @@ def newtons_method(w, X, y, eta, epoch):
             break
         i += 1
     return w, p
+
+def perceptron(w, X, y, eta, epoch):
+    for i in range(epoch):
+        w_prev = w.copy()
+        for j in range(X.shape[0]):
+            z = X[j] @ w
+            zi = 1 if z >= 0 else 0  # Activation function
+            if zi != y[j]:
+                w = w + eta * (y[j] - zi) * X[j].reshape(-1, 1)
+        if np.linalg.norm(w - w_prev) < 1e-3:
+            break
+        #if i % 10 == 0:
+            #loss = np.mean(np.maximum(0, 1 - y * (X @ w)))
+            #print(f'Epoch {i}: Loss = {loss:.4f}')
+        i += 1
+    p = np.where(X @ w >= 0, 1, 0)
+    print(p)
+    return w, p
