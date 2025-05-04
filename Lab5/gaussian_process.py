@@ -38,7 +38,8 @@ y_train = data[:, 1]
 #print(X_train)
 X_min, X_max = X_train.min(), X_train.max()
 #print(X_min, X_max)
-X_test = np.linspace(X_min - 1, X_max + 1, 100).reshape(-1, 1)
+#X_test = np.linspace(X_min - 1, X_max + 1, 100).reshape(-1, 1)
+X_test = np.linspace(-60, 60, 500).reshape(-1, 1)
 
 parameters = np.log([1.0, 1.0, 1.0])
 res = minimize(marginal_likelihood, parameters, args=(X_train, y_train), method='L-BFGS-B')
@@ -63,5 +64,5 @@ plt.fill_between(X_test.flatten(),
 plt.title('Gaussian Process Regression with Rational Quadratic Kernel')
 plt.legend()
 plt.grid(True)
-plt.savefig('result/task2.png', dpi=300, bbox_inches='tight')
+#plt.savefig('result/GP/task2.png', dpi=300, bbox_inches='tight')
 plt.show()
