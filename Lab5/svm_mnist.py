@@ -93,7 +93,6 @@ plt.ylabel("C")
 plt.show()
 
 #print(linear_acc)
-
 #for i in range(poly_acc.shape[0]):
 #    print(f"=== Slice {i} ===")
 #    print(poly_acc[i])

@@ -51,7 +51,7 @@ def poly(X_test, y_test, X_train, y_train, C_list, gamma_list, d_list):
                 end = time.time()
                 acc_matrix[i, j, k] = acc
                 print(f"CV Accuracy = {acc:.2f}%, Time: {end - start:.2f} sec")
-
+                
                 if acc > best_acc:
                     best_acc = acc
                     final_C = C
@@ -97,7 +97,6 @@ def rbf(X_test, y_test, X_train, y_train, C_list, gamma_list):
     print(f"Train acc = {train_acc[0]:.2f}%, Test acc = {test_acc[0]:.2f}%")
     #svm_save_model('result/SVM/task2_rbf.txt', model)
 
-    # 畫 heatmap
     plt.figure(figsize=(8, 6))
     sns.heatmap(acc_matrix, annot=True, fmt=".2f", xticklabels=gamma_list, yticklabels=C_list, cmap="YlGnBu")
     plt.title("5-fold CV Accuracy (%) for RBF Kernel")

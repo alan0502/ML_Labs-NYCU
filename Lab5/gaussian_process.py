@@ -38,7 +38,6 @@ y_train = data[:, 1]
 #print(X_train)
 X_min, X_max = X_train.min(), X_train.max()
 #print(X_min, X_max)
-#X_test = np.linspace(X_min - 1, X_max + 1, 100).reshape(-1, 1)
 X_test = np.linspace(-60, 60, 500).reshape(-1, 1)
 
 parameters = np.log([1.0, 1.0, 1.0])
@@ -51,9 +50,9 @@ mean, std = predict_kernel(X_train, y_train, X_test, final_alpha, final_length_s
 # Plotting
 plt.figure(figsize=(10, 6))
 plt.plot(X_train, y_train, 'kx', label='Training Data')  # black x for training points
-plt.plot(X_test, mean, 'r-', label='Predicted Mean')      # blue line for mean
+plt.plot(X_test, mean, 'r-', label='Predicted Mean')     # blue line for mean
 plt.plot(X_test, mean - 2 * std, 'r--', linewidth=0.5)
-plt.plot(X_test, mean + 2 * std, 'r--', linewidth=0.5)  # blue line for mean ± 2 std
+plt.plot(X_test, mean + 2 * std, 'r--', linewidth=0.5)  # blue line for mean ± 2 std (95% CI)
 plt.fill_between(X_test.flatten(), 
                  mean - 2 * std, 
                  mean + 2 * std, 
