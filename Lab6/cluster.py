@@ -7,7 +7,7 @@ import glob
 def kmeans_plusplus_init_kernel(kernel, k):
     N = kernel.shape[0]
     centers = []
-    # Step 1: 隨機選第一個中心
+    # Random select the center
     first = np.random.randint(0, N)
     centers.append(first)
     
@@ -41,13 +41,14 @@ def kmeans_plusplus_init_spectral(features, k, retries=10):
     for attempt in range(retries):
         centers = []
 
-        # Step 1: 隨機挑第一個中心
+        # Random select the center
         first_center_idx = np.random.randint(0, N)
         centers.append(features[first_center_idx])
 
-        # Step 2~k: 根據距離平方機率分布選新中心
+        # 根據距離平方機率分布選新中心，距離dist越遠被選成center越高
         for _ in range(1, k):
             dist = []
+            # 對每個 datapoint 算離他最近距離的中心的距離
             for x in features:
                 min_dist_sq = float('inf')
                 for c in centers:
@@ -61,12 +62,12 @@ def kmeans_plusplus_init_spectral(features, k, retries=10):
             new_center_idx = np.random.choice(N, p=probs)
             centers.append(features[new_center_idx])
 
-        # Step 3: Assign labels
+        # Assign labels
         centers = np.array(centers)
         dists_to_centers = np.linalg.norm(features[:, np.newaxis, :] - centers[np.newaxis, :, :], axis=2)
         labels = np.argmin(dists_to_centers, axis=1)
 
-        # 檢查群大小是否合理
+        # 檢查群大小是否合理，若其中一群只有一點，無效
         cluster_sizes = np.bincount(labels, minlength=k)
         if np.min(cluster_sizes) <= 1:
             print(f"[Attempt {attempt+1}] Discarded: one cluster only has 1 point.")
@@ -161,11 +162,9 @@ def kernel_kmeans(epoch, k, kernel, image_size, dir_name, kmeanspp):
                 #print("(", i, ", ", j, ")")
                 #print(idx)
                 dist = []
-
                 # first term
                 term1 = kernel[idx, idx]
                 #print(first)
-
                 for c in range(k):
                     # idx_c: cluster c 的 datapoint index
                     idx_c = label_idx[c]
@@ -214,7 +213,7 @@ def spectral_ratio_cut(W, epoch, k, image_size, dir_name, kmeanspp):
 
     # Step 2: Eigen decomposition
     eigvals, eigvecs = np.linalg.eigh(L)  # Since L is symmetric (use eigh)
-    #print(eigvals)
+    print(eigvals[:10])
     #print(eigvecs)
     H = eigvecs[:, 1:k+1]  # take 2nd to Nth eigenvectors
     #print(H)
@@ -302,7 +301,7 @@ def spectral_normalized_cut(W, epoch, k, image_size, dir_name, kmeanspp):
             break
 
         labels = new_labels.copy()
-    plot_eigen_projection(H, labels)
+    plot_eigen_projection(H, labels, dir_name)
+    for i in range(k):
+        plot_single_eigenvector(H, labels, i, dir_name)
     return labels, losses
-
-
