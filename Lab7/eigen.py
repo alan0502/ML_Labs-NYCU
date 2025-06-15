@@ -45,11 +45,7 @@ def load_yale_faces(folder, resized_factor=1, normalize=True):
             label = int(fname.split('.')[0].replace("subject", ""))
             y.append(label)
             filenames.append(fname)
-
     return np.array(X), np.array(y), image_shape, filenames
-
-
-
 
 def visualize_eigenfaces(eigenvectors, image_shape, title, n_rows=5, n_cols=5):
     fig, axes = plt.subplots(n_rows, n_cols, figsize=(10, 10))
@@ -80,7 +76,7 @@ if mode == 0:
         top_eigenvectors, mean_face = pca(X_train, n_components=25)
         visualize_eigenfaces(top_eigenvectors, image_shape, title="pca")
         pca_reconstruction(X_train, top_eigenvectors, mean_face, image_shape, num_samples=10)
-        pca_recognition(X_train, y_train, X_test, y_test, top_eigenvectors, mean_face, k=1)
+        pca_recognition(X_train, y_train, X_test, y_test, top_eigenvectors, mean_face, k=9)
     elif kernel == 1:
         X_train, y_train, image_shape, filenames = load_yale_faces(train_dir, resized_factor=3, normalize=True)
         X_test, y_test, _, _ = load_yale_faces(test_dir, resized_factor=3, normalize=True)
@@ -97,8 +93,7 @@ if mode == 0:
         #print(type(top_eigenvectors))
         #print(top_eigenvectors.shape)
         #visualize_eigenfaces(top_eigenvectors, image_shape)
-        acc = pca_kernel_recognition(X_train, y_train, X_test, y_test, top_eigenvectors, K_centered, kernel_func, k=1)
-
+        acc = pca_kernel_recognition(X_train, y_train, X_test, y_test, top_eigenvectors, K_centered, kernel_func, k=9)
 
 elif mode == 1:
     kernel = int(input("Kernel or not (0: No, 1: Yes): "))
@@ -120,7 +115,7 @@ elif mode == 1:
         print("Fisherfaces shape:", fisherfaces.shape)
         # Step 5: Visualize
         visualize_eigenfaces(fisherfaces.T, image_shape, title="lda")
-        lda_recognition(X_train, y_train, X_test, y_test, top_eigenvectors, mean_face, fisherfaces, k=1)
+        lda_recognition(X_train, y_train, X_test, y_test, mean_face, pca_components, top_eigenvectors, k=9)
         lda_reconstruction(X_train, mean_face, pca_components, top_eigenvectors, image_shape, num_samples=10)
     elif kernel == 1:
         X_train, y_train, image_shape, filenames = load_yale_faces(train_dir, resized_factor=3, normalize=True)
@@ -135,4 +130,4 @@ elif mode == 1:
         else:
             raise ValueError("Invalid kernel mode selected.")
         top_eigenvectors, K_centered, K_train_raw = lda_kernel(X_train, y_train, kernel_func, n_components=25)
-        lda_kernel_recognition(K_centered=K_centered, X_train=X_train, y_train=y_train, X_test=X_test, y_test=y_test, top_eigenvectors=top_eigenvectors, kernel_func=kernel_func, K_train_raw=K_train_raw, k=1)
+        lda_kernel_recognition(K_centered=K_centered, X_train=X_train, y_train=y_train, X_test=X_test, y_test=y_test, top_eigenvectors=top_eigenvectors, kernel_func=kernel_func, K_train_raw=K_train_raw, k=9)

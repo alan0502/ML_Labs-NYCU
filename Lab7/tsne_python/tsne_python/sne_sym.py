@@ -7,9 +7,6 @@ import imageio
 import os
 
 def plot_similarity_distribution(P, Q, method_name):
-    """
-    視覺化高維 (P) 和低維 (Q) 相似度分佈
-    """
     # 移除對角線（p_ii, q_ii = 0）
     n = P.shape[0]
     P_flat = P[np.triu_indices(n, k=1)]
@@ -148,7 +145,7 @@ def tsne(X=np.array([]), no_dims=2, initial_dims=50, perplexity=30.0, labels=Non
     P = x2p(X, 1e-5, perplexity)
     P = P + np.transpose(P)
     P = P / np.sum(P)
-    P = P * 4.									# early exaggeration
+    P = P * 4.	# early exaggeration
     P = np.maximum(P, 1e-12)
 
     # Initialize error tracking
@@ -158,7 +155,6 @@ def tsne(X=np.array([]), no_dims=2, initial_dims=50, perplexity=30.0, labels=Non
 
     # Run iterations
     for iter in range(max_iter):
-
         # Compute pairwise affinities
         sum_Y = np.sum(np.square(Y), 1)
         num = -2. * np.dot(Y, Y.T)
@@ -234,7 +230,10 @@ if __name__ == "__main__":
     print("Running example on 2,500 MNIST digits...")
     X = np.loadtxt("mnist2500_X.txt")
     labels = np.loadtxt("mnist2500_labels.txt")
-    Y = tsne(X, 2, 50, 50.0, labels=labels, save_gif=True)
+    Y = tsne(X, 2, 50, 10.0, labels=labels, save_gif=True)
+    plt.axis('equal')               
+    plt.xlim(-110, 110)             
+    plt.ylim(-110, 110)
     pylab.scatter(Y[:, 0], Y[:, 1], 20, labels)
     pylab.savefig("result/SNE_sym.png", dpi=300)
     #pylab.show()

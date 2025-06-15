@@ -15,20 +15,17 @@ def rbf_kernel(X, Y, gamma=1e-3):
     pairwise_sq_dists = cdist(X, Y, 'sqeuclidean')
     return np.exp(-gamma * pairwise_sq_dists)
 
-def poly_kernel(X, Y, degree=3, coef0=1):
+def poly_kernel(X, Y, degree=2, coef0=1):
     return (np.dot(X, Y.T) + coef0) ** degree
 
 def center_train_kernel(K):
     N = K.shape[0]
     one_n = np.ones((N, N)) / N
-    #return K - one_n @ K - K @ one_n + one_n @ K @ one_n
     return K - np.dot(one_n, K) - np.dot(K, one_n) + np.dot(np.dot(one_n, K), one_n)
 
-
-def center_test_kernel(K_test_raw, K_train_raw):
-    N = K_train_raw.shape[0]
-    one_N = np.ones((N, N)) / N
-    K_test_centered = K_test_raw - np.mean(K_train_raw, axis=0) - np.mean(K_test_raw, axis=1, keepdims=True) + np.mean(K_train_raw)
+def center_test_kernel(K_test, K_train):
+    N = K_train.shape[0]
+    K_test_centered = K_test - np.mean(K_train, axis=0) - np.mean(K_test, axis=1, keepdims=True) + np.mean(K_train)
     return K_test_centered
 
 def pca(X, n_components):
@@ -68,11 +65,11 @@ def pca_recognition(X_train, y_train, X_test, y_test, top_eigenvectors, mean_fac
         test = X_test_proj[i]
         distances = np.linalg.norm(X_train_proj - test, axis=1)
 
-        # 取得前 k 個最近鄰
+        # Get the k nearest neighbors
         top_k_indices = np.argsort(distances)[:k]
         top_k_labels = y_train[top_k_indices]
 
-        # 多數投票決定預測結果
+        # Majority voting for the predicted label
         counts = np.bincount(top_k_labels)
         predicted_label = np.argmax(counts)
 
@@ -111,71 +108,37 @@ def pca_reconstruction(X_train, top_eigenvectors, mean_face, image_shape, num_sa
     plt.show()
 
 def pca_kernel(X, kernel_func, n_components=25):
-    n_samples = X.shape[0]
-    print(X)
+    # Compute kernel matrix and center it
     K = kernel_func(X, X)  # shape: (n_samples, n_samples)
-    print("K:")
-    print(K)
-    K_centered = center_train_kernel(K)  # 中心化核矩陣
-    print("asa")
-    print(K_centered)
-    eigenvalues, eigenvectors = np.linalg.eigh(K_centered)  # 計算特徵值和特徵向量
+    K_centered = center_train_kernel(K) 
 
-    #print(f"Eigenvalues before sorting: {eigenvalues}")
+    # Eigen decomposition
+    eigenvalues, eigenvectors = np.linalg.eigh(K_centered)
+
     sort_index = np.argsort(-eigenvalues)  # sort eigenvalues in descending order
     eigenvalues = eigenvalues[sort_index]
-    print(f"Eigenvalues after sorting: {eigenvalues}")
     eigenvectors = eigenvectors[:, sort_index]
-    print(eigenvectors[:5, :5])  # 顯示前 5 個特徵向量
     
     # 選擇前 n_components 個特徵值和向量
-    top_eigenvectors = eigenvectors[:, :n_components]
     top_eigenvalues = eigenvalues[:n_components]
-    #print("iUiuiu")
-    #print(top_eigenvalues)
+    top_eigenvectors = eigenvectors[:, :n_components]
 
     # Normalize eigenvectors
-    #top_eigenvectors = top_eigenvectors / np.sqrt(top_eigenvalues[np.newaxis, :] + 1e-8)
-    #top_eigenvectors = top_eigenvectors / np.linalg.norm(top_eigenvectors, axis=0)
     top_eigenvectors = top_eigenvectors / np.linalg.norm(top_eigenvectors, axis=0)
-
-    #print("top_eigenvectors.shape:", top_eigenvectors.shape)
-
-    orthogonality = np.dot(top_eigenvectors.T, top_eigenvectors)
-    #print("Should be close to identity:\n", orthogonality)
-    print("asaa")
-    print(top_eigenvectors)
     return top_eigenvectors, K_centered
 
 def pca_kernel_recognition(X_train, y_train, X_test, y_test, top_eigenvectors, K_centered, kernel_func, k):
     K_train_raw = kernel_func(X_train, X_train)
     K_test_raw = kernel_func(X_test, X_train)
-    #print(X_train.shape, X_test.shape)
-    #print("K_train_raw shape:", K_train_raw.shape)
-    #print("K_test_raw shape:", K_test_raw.shape)
     
     K_train = center_train_kernel(K_train_raw)
     K_test = center_test_kernel(K_test_raw, K_train_raw)
 
-    #print("mean of K_train before center:", np.mean(K_train_raw))
-    #print("mean of K_train after center:", np.mean(K_train))
-    #print("mean of K_test before center:", np.mean(K_test_raw))
-    #print("mean of K_test after center:", np.mean(K_test))
-
-    # 投影到 PCA 空間
+    # Project training and testing data onto the top eigenvectors
     X_train_proj = np.dot(K_train, top_eigenvectors)
     X_test_proj = np.dot(K_test, top_eigenvectors)
-    #print("X_train_proj shape:", X_train_proj.shape)
-    #print("X_test_proj shape:", X_test_proj.shape)
 
-    plt.scatter(X_train_proj[:, 0], X_train_proj[:, 1], c=y_train, cmap='tab10', s=10)
-    plt.title("Kernel PCA Projection (Train)")
-    plt.xlabel("PC1")
-    plt.ylabel("PC2")
-    plt.colorbar()
-    plt.show()
-
-    # k-NN 多數投票分類
+    # knn classification
     correct_predictions = 0
     for i in range(X_test_proj.shape[0]):
         test = X_test_proj[i]
@@ -193,56 +156,63 @@ def pca_kernel_recognition(X_train, y_train, X_test, y_test, top_eigenvectors, K
 
 def lda(X, y, n_components):
     n_samples, n_features = X.shape
+    print(n_samples, n_features)
     class_labels = np.unique(y)
-    n_classes = len(class_labels)
 
-    # 計算整體平均
+    # Calculate the mean of each data point
     mean_total = np.mean(X, axis=0)
 
-    # 類內散佈矩陣 SW, 類間散佈矩陣 SB
+    # Scatter within class SW, scatter between class SB
     SW = np.zeros((n_features, n_features))
     SB = np.zeros((n_features, n_features))
 
     for c in class_labels:
         Xc = X[y == c]
         mean_c = np.mean(Xc, axis=0)
-        SW += (Xc - mean_c).T @ (Xc - mean_c)  # 類內散佈
+        SW += (Xc - mean_c).T @ (Xc - mean_c)
         n_c = Xc.shape[0]
         mean_diff = (mean_c - mean_total).reshape(-1, 1)
-        SB += n_c * (mean_diff @ mean_diff.T)  # 類間散佈
+        SB += n_c * (mean_diff @ mean_diff.T)
 
-    # 求解廣義特徵值問題 SW⁻¹SB
-    eigvals, eigvecs = np.linalg.eig(np.linalg.pinv(SW) @ SB)
+    # Solve generalized eigenvalue problem from SW⁻¹SB
+    eigvals, eigvecs = np.linalg.eig(np.linalg.pinv(SW) @ SB) # pseudo inverse for numerical stability
     idx = np.argsort(-eigvals.real)
     eigvecs = eigvecs[:, idx[:n_components]].real
     return eigvecs
 
-def lda_recognition(X_train, y_train, X_test, y_test, top_eigenvectors, mean_X, fisherfaces, k=1):
-    # 將 train/test 投影進 Fisherface 空間
-    X_train_lda = (X_train - mean_X) @ fisherfaces.T  # shape: (n_train, 25)
-    X_test_lda = (X_test - mean_X) @ fisherfaces.T    # shape: (n_test, 25)
-    # 計算測試樣本到所有訓練樣本的距離
-    dists = cdist(X_test_lda, X_train_lda)  # shape: (n_test, n_train)
+def lda_recognition(X_train, y_train, X_test, y_test, mean_face, pca_components, lda_components, k=1):
+    # Project to PCA
+    X_pca_train = project_onto_eigen(X_train, mean_face, pca_components)
+    X_pca_test = project_onto_eigen(X_test, mean_face, pca_components)
 
-    # 找最近的 k 個鄰居
+    # Project to LDA 
+    X_lda_train = project_onto_eigen(X_pca_train, None, lda_components)
+    X_lda_test = project_onto_eigen(X_pca_test, None, lda_components)
+
+    # 計算測試樣本到所有訓練樣本的距離
+    dists = cdist(X_lda_test, X_lda_train)  # shape: (n_test, n_train)
+
+    # Get the k nearest neighbors
     knn_indices = np.argsort(dists, axis=1)[:, :k]
     knn_labels = y_train[knn_indices]
 
-    # 預測：k=1 時直接取最近鄰；k>1 時取眾數
+    # Predict labels
     if k == 1:
         y_pred = knn_labels.flatten()
     else:
-        from scipy.stats import mode
-        y_pred = mode(knn_labels, axis=1).mode.flatten()
+        y_pred = []
+        for row in knn_labels:
+            counts = np.bincount(row)
+            y_pred.append(np.argmax(counts))
+        y_pred = np.array(y_pred)
 
-    # 計算準確率
     accuracy = np.mean(y_pred == y_test)
     print(f"[LDA + PCA] Face Recognition Accuracy (k={k}): {accuracy * 100:.2f}%")
 
 def lda_reconstruction(X_train, mean_face, pca_components, lda_components, image_shape, num_samples):
-    # 投影到 PCA 空間
+    # Project to PCA
     X_pca = project_onto_eigen(X_train, mean_face, pca_components)
-    # 投影到 LDA 空間
+    # Project to LDA 
     X_lda = project_onto_eigen(X_pca, None, lda_components)
     # 投影回 high dim，再中心化
     X_pca_recon = X_lda @ lda_components.T  # (n_test, 100)
@@ -271,17 +241,18 @@ def lda_reconstruction(X_train, mean_face, pca_components, lda_components, image
     plt.savefig("kernel_eigenface/recon/lda.png", dpi=300)
     plt.show()
 
-def lda_kernel(X, y, kernel_func, n_components=2):
+def lda_kernel(X, y, kernel_func, n_components=25):
     n_samples = X.shape[0]
     classes = np.unique(y)
 
-    # Step 1: 計算中心化核矩陣
+    # Compute kernel matrix and center it
     K = kernel_func(X, X)
-    one_n = np.ones((n_samples, n_samples)) / n_samples
-    K_centered = K - one_n @ K - K @ one_n + one_n @ K @ one_n
+    K_centered = center_train_kernel(K)
 
-    # Step 2: 類間與類內散佈
+    # Calculate the mean of each data point
     overall_mean = np.mean(K_centered, axis=0, keepdims=True)
+
+    # Scatter within class SW, scatter between class SB
     S_B = np.zeros((n_samples, n_samples))
     S_W = np.zeros((n_samples, n_samples))
 
@@ -298,53 +269,29 @@ def lda_kernel(X, y, kernel_func, n_components=2):
             diff = (K_c[i:i+1] - mean_c)
             S_W += diff.T @ diff
 
-    # Step 3: 廣義特徵值問題轉標準特徵值問題
-    reg = 1e-6 * np.eye(n_samples)
-    S_W_inv = np.linalg.inv(S_W + reg)
-    matrix = S_W_inv @ S_B
+    # Generalized eigenvalue problem with pseudo-inverse
+    S_W_pinv = np.linalg.pinv(S_W)
+    matrix = S_W_pinv @ S_B
 
-    # Step 4: 求 eigenvectors
+    # Eigen decomposition
     eigvals, eigvecs = np.linalg.eigh(matrix)
     top_indices = np.argsort(eigvals)[-n_components:]
     top_eigenvectors = eigvecs[:, top_indices]
 
     return top_eigenvectors, K_centered, K
 
-
-def lda_kernel_recognition(
-    K_centered,            # 已中心化的 K_train
-    X_train, y_train,
-    X_test, y_test,
-    top_eigenvectors,
-    kernel_func,
-    K_train_raw=None,      # 可以提前給，否則內部自算
-    k=1,
-    visualize=True
-):
-    # Step 1: 投影 train
-    X_train_proj = np.dot(K_centered, top_eigenvectors)
-
-    # Step 2: 計算 K_test
+def lda_kernel_recognition(K_centered, X_train, y_train, X_test, y_test, top_eigenvectors, kernel_func, K_train_raw=None, k=1, visualize=True):
+    # Compute kernel and center it
     if K_train_raw is None:
         K_train_raw = kernel_func(X_train, X_train)
     K_test_raw = kernel_func(X_test, X_train)
     K_test = center_test_kernel(K_test_raw, K_train_raw)
 
-    # Step 3: 投影 test
+    # Project training and testing data onto the top eigenvectors
+    X_train_proj = np.dot(K_centered, top_eigenvectors)
     X_test_proj = np.dot(K_test, top_eigenvectors)
 
-    # Step 4: 視覺化 train 資料在前兩主成分
-    if visualize:
-        plt.figure(figsize=(6, 5))
-        plt.scatter(X_train_proj[:, 0], X_train_proj[:, 1], c=y_train, cmap='tab10', s=10)
-        plt.title("Kernel PCA Projection (Train)")
-        plt.xlabel("PC1")
-        plt.ylabel("PC2")
-        plt.colorbar()
-        plt.tight_layout()
-        plt.show()
-
-    # Step 5: k-NN 分類
+    # Use k-NN for classification and calculate accuracy
     correct_predictions = 0
     for i in range(X_test_proj.shape[0]):
         test = X_test_proj[i]

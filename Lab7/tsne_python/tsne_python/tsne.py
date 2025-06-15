@@ -21,15 +21,12 @@ import imageio
 import os
 
 def plot_similarity_distribution(P, Q, method_name):
-    """
-    視覺化高維 (P) 和低維 (Q) 相似度分佈
-    """
-    # 移除對角線（p_ii, q_ii = 0）
+    # 移除對角線（pii, qii = 0）
     n = P.shape[0]
     P_flat = P[np.triu_indices(n, k=1)]
     Q_flat = Q[np.triu_indices(n, k=1)]
 
-    # 畫出 histogram
+    # Plot histogram
     plt.figure(figsize=(8, 4))
     plt.hist(P_flat, bins=100, alpha=0.5, label="P (High-D)", density=True)
     plt.hist(Q_flat, bins=100, alpha=0.5, label="Q (Low-D)", density=True)
@@ -164,12 +161,12 @@ def tsne(X=np.array([]), no_dims=2, initial_dims=50, perplexity=30.0, labels=Non
     P = x2p(X, 1e-5, perplexity)
     P = P + np.transpose(P)
     P = P / np.sum(P)
-    P = P * 4.									# early exaggeration
+    P = P * 4.	# early exaggeration
     P = np.maximum(P, 1e-12)
 
     # Initialize error tracking
     errors = []
-    frames = []  # 🆕 儲存每 N 輪嵌入狀態
+    frames = []  # 儲存每 N 輪嵌入狀態
     frame_interval = 20  # 每幾輪紀錄一次圖
 
     # Run iterations
@@ -248,7 +245,10 @@ if __name__ == "__main__":
     print("Running example on 2,500 MNIST digits...")
     X = np.loadtxt("mnist2500_X.txt")
     labels = np.loadtxt("mnist2500_labels.txt")
-    Y = tsne(X, 2, 50, 50.0, labels=labels, save_gif=True)
+    Y = tsne(X, 2, 50, 10.0, labels=labels, save_gif=True)
+    plt.axis('equal')               
+    plt.xlim(-110, 110)             
+    plt.ylim(-110, 110)             
     plt.scatter(Y[:, 0], Y[:, 1], 20, labels)
     plt.savefig("result/t-SNE.png", dpi=300)
     #plt.show()
